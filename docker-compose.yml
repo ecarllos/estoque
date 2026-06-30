@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: estoque_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: controle_estoque
+    ports:
+      - "5431:5431"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

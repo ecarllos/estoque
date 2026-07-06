@@ -1,9 +1,153 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+}
+
+model Responsavel {
+  id  String @id @default(uuid())
+  nome  String
+  email String @unique
+  setor Setores
+  cidade Cidades
+  status Boolean
+  assinatura String
+  vinculos Vinculo[]
+  historico HistoricoObjeto[]
+}
+
+model Eletronico {
+  id String @id @default(uuid())
+  tipo Aparelhos
+  numeroSerie String @unique
+  marca Marcas
+  modelo String
+  senha String
+  situacao Status
+  seguro Boolean
+  condicao Condicao
+  vinculoId String? @unique
+
+  vinculo Vinculo? @relation("eletronicoReferencia", fields: [vinculoId], references: [id])
+}
+
+model Chip {
+  id String @id @default(uuid())
+  operadora Operadoras
+  ddd String
+  numero String @unique
+  vinculoId String? @unique
+
+  vinculo Vinculo? @relation("chipReferencia", fields: [vinculoId], references: [id])
+}
+
+model Periferico {
+  id String @id @default(uuid())
+  tipo Perifericos
+  marca Marcas
+  condicao Condicao
+  situacao Status
+  vinculoId String? @unique
+  
+  vinculo Vinculo? @relation("perifericoReferencia",  fields: [vinculoId], references: [id])
+}
+
+model Vinculo {
+  id String @id @default(uuid())
+  status Boolean
+  responsavelId String
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  historico HistoricoObjeto[]
+  
+  eletronicos Eletronico? @relation("eletronicoReferencia")
+  perifericos Periferico? @relation("perifericoReferencia")
+  chips Chip? @relation("chipReferencia")
+
+  responsavel Responsavel @relation( fields: [responsavelId], references: [id])
+
+  @@index([responsavelId])
+}
+
+model HistoricoObjeto {
+  id String @id @default(uuid())
+  vinculoId String
+  responsavelId String
+  condicao Condicao
+  acao Acao
+  detalhes String?
+  createAt DateTime @default(now())
+
+  vinculo Vinculo @relation(fields: [vinculoId], references: [id])
+  responsavel Responsavel @relation(fields: [responsavelId], references: [id])
+
+  @@index([responsavelId])
+}
+
+// ===================
+//   ENUMS
+// ===================
+
+enum Acao {
+  DEVOLVIDO
+  ENTREGUE
+}
+
+enum Perifericos {
+  MOUSE
+  TECLADO
+  MOUSE_PAD
+  CARREGADOR
+  SUPORTE
+}
+
+enum Operadoras {
+  CLARO
+  TIM
+  VIVO
+}
+
+enum Status {
+  LIVRE
+  OCUPADO 
+}
+
+enum Marcas {
+  LENOVO
+  SAMSUNG
+  XIAOMI
+  MOTOROLA
+  GENERICO
+  OUTRA
+}
+
+enum Condicao {
+  NOVO
+  SEMI_NOVO
+  USADO
+}
+
+enum Aparelhos {
+  NOTEBOOK
+  CELULAR
+  TABLET
+}
+
+enum Setores {
+  COMERCIAL
+  BACKOFFICE
+  ADMINISTRATIVO
+  RELACIONAMENTO
+  TI
+}
+
+enum Cidades {
+  FORTALEZA
+  JUAZEIRO
+  JOINVILLE
+  JOAO_PESSOA
 }

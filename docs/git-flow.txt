@@ -1,0 +1,5 @@
+git flow feature start <nome>               // Cria uma nova branch
+git flow feature finish <nome>             // Finaliza uma feature, fazendo o merge de volta para a develop e deletando a branch
+git flow feature list                     // Lista todas as branches de feature existentes
+git flow feature diff [<nome>]           // Mostra todas as alterações da feature que ainda não estão na develop
+git flow feature rebase [-i] [<nome>]   // Rebaseia a feature em cima da develop (com opção -i para interativo)

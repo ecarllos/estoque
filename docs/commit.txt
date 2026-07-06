@@ -1,0 +1,11 @@
+Tipos de  COMMITs
+
+feat: nova funcionalidade
+fix: correção de bug
+chore: manutenção, configs, coisas que não afetam o código final (atualizar bibliotecas, dependências, etc)
+refactor: mudança interna sem alterar comportamento (organização interna sem alterar o resultado já feito)
+style: formatação (eslint, prettier, indentação…)
+docs: documentação
+test: testes
+build: dependências, build system
+perf: otimização

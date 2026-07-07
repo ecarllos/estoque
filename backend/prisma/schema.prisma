@@ -13,7 +13,7 @@ model Responsavel {
   setor Setores
   cidade Cidades
   status Boolean
-  assinatura String
+  assinatura String?
   vinculos Vinculo[]
   historico HistoricoObjeto[]
 }

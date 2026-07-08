@@ -6,6 +6,13 @@ import { ListarResponsaveisDto } from '../dto/listar-responsaveis.dto';
 export class ResponsavelQuery {
   constructor(private readonly prisma: PrismaService) {}
 
+  async buscarId(id: string) {
+    return await this.prisma.responsavel.findUnique({
+      where: { id },
+      select: { email: true },
+    });
+  }
+
   async buscarEmail(email: string) {
     return await this.prisma.responsavel.findUnique({ where: { email } });
   }

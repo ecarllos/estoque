@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateResponsavelDto } from '../dto/create-responsavel.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { UpdateResponsavelDto } from '../dto/update-responsavel.dto';
 
 @Injectable()
 export class ResponsavelCommand {
@@ -14,7 +15,19 @@ export class ResponsavelCommand {
         setor: dto.setor,
         cidade: dto.cidade,
         status: dto.status,
-        assinatura: dto.assinatura,
+      },
+    });
+  }
+
+  async updateResponsavel(id: string, dto: UpdateResponsavelDto) {
+    return await this.prisma.responsavel.update({
+      where: { id },
+      data: {
+        nome: dto.nome,
+        email: dto.email,
+        setor: dto.setor,
+        cidade: dto.cidade,
+        status: dto.status,
       },
     });
   }

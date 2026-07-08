@@ -8,4 +8,11 @@ export class ResponsavelQuery {
   async buscarEmail(email: string) {
     return await this.prisma.responsavel.findUnique({ where: { email } });
   }
+
+  async mostrarResponsavel(email: string) {
+    return await this.prisma.responsavel.findUnique({
+      where: { email },
+      include: {},
+    });
+  }
 }

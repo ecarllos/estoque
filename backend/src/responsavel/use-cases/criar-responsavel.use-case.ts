@@ -1,13 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ResponsavelQuery } from '../repository/query.repo';
-import { responsavelCommand } from '../repository/command.repo';
+import { ResponsavelCommand } from '../repository/command.repo';
 import { CreateResponsavelDto } from '../dto/create-responsavel.dto';
 
 @Injectable()
 export class CriarResponsavelUseCase {
   constructor(
     private readonly query: ResponsavelQuery,
-    private readonly command: responsavelCommand,
+    private readonly command: ResponsavelCommand,
   ) {}
 
   async execute(dto: CreateResponsavelDto) {

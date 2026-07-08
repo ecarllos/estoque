@@ -1,9 +1,19 @@
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  Patch,
+} from '@nestjs/common';
 import { CreateResponsavelDto } from './dto/create-responsavel.dto';
 import { CriarResponsavelUseCase } from './use-cases/criar-responsavel.use-case';
 import { MostrarUmResponsavel } from './use-cases/mostrar-um-responsavel.use-case';
 import { ListarTodosResponsaveis } from './use-cases/listar-todos-responsaveis.use-case';
 import { ListarResponsaveisDto } from './dto/listar-responsaveis.dto';
+import { UpdateResponsavelDto } from './dto/update-responsavel.dto';
+import { AtualizarResponsavel } from './use-cases/atualizar-responsavel.use-case';
 
 @Controller('responsavel')
 export class ResponsavelController {
@@ -11,6 +21,7 @@ export class ResponsavelController {
     private readonly criarResponsavel: CriarResponsavelUseCase,
     private readonly mostrarUmResponsavel: MostrarUmResponsavel,
     private readonly listarTodosResponsaveis: ListarTodosResponsaveis,
+    private readonly atualiarResponsavel: AtualizarResponsavel,
   ) {}
 
   @Post('/create')
@@ -26,5 +37,10 @@ export class ResponsavelController {
   @Get(':email')
   async mostrarUm(@Param('email') email: string) {
     return await this.mostrarUmResponsavel.execute(email);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() dto: UpdateResponsavelDto) {
+    return await this.atualiarResponsavel.execute(id, dto);
   }
 }

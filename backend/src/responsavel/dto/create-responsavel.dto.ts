@@ -1,11 +1,5 @@
 import { Cidades, Setores } from '@prisma/client';
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateResponsavelDto {
   @IsNotEmpty()
@@ -24,8 +18,4 @@ export class CreateResponsavelDto {
 
   @IsBoolean()
   status!: boolean;
-
-  @IsOptional()
-  @IsString()
-  assinatura?: string;
 }

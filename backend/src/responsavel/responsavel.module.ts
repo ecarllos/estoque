@@ -5,6 +5,7 @@ import { ResponsavelQuery } from './repository/query.repo';
 import { ResponsavelCommand } from './repository/command.repo';
 import { MostrarUmResponsavel } from './use-cases/mostrar-um-responsavel.use-case';
 import { ListarTodosResponsaveis } from './use-cases/listar-todos-responsaveis.use-case';
+import { AtualizarResponsavel } from './use-cases/atualizar-responsavel.use-case';
 
 @Module({
   controllers: [ResponsavelController],
@@ -14,6 +15,7 @@ import { ListarTodosResponsaveis } from './use-cases/listar-todos-responsaveis.u
     CriarResponsavelUseCase,
     MostrarUmResponsavel,
     ListarTodosResponsaveis,
+    AtualizarResponsavel,
   ],
 })
 export class ResponsavelModule {}

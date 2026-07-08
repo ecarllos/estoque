@@ -3,7 +3,7 @@ import { CreateResponsavelDto } from '../dto/create-responsavel.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class responsavelCommand {
+export class ResponsavelCommand {
   constructor(private readonly prisma: PrismaService) {}
 
   async createResponsavel(dto: CreateResponsavelDto) {

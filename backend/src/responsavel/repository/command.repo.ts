@@ -22,13 +22,7 @@ export class ResponsavelCommand {
   async updateResponsavel(id: string, dto: UpdateResponsavelDto) {
     return await this.prisma.responsavel.update({
       where: { id },
-      data: {
-        nome: dto.nome,
-        email: dto.email,
-        setor: dto.setor,
-        cidade: dto.cidade,
-        status: dto.status,
-      },
+      data: dto,
     });
   }
 

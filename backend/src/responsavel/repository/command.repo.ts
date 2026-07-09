@@ -9,13 +9,7 @@ export class ResponsavelCommand {
 
   async createResponsavel(dto: CreateResponsavelDto) {
     return await this.prisma.responsavel.create({
-      data: {
-        nome: dto.nome,
-        email: dto.email,
-        setor: dto.setor,
-        cidade: dto.cidade,
-        status: dto.status,
-      },
+      data: dto,
     });
   }
 

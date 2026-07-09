@@ -24,7 +24,7 @@ model Eletronico {
   numeroSerie String @unique
   marca Marcas
   modelo String
-  senha String
+  senha String?
   situacao Status
   seguro Boolean
   condicao Condicao

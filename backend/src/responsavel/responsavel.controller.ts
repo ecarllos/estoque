@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { CreateResponsavelDto } from './dto/create-responsavel.dto';
 import { CriarResponsavelUseCase } from './use-cases/criar-responsavel.use-case';
@@ -14,6 +15,7 @@ import { ListarTodosResponsaveis } from './use-cases/listar-todos-responsaveis.u
 import { ListarResponsaveisDto } from './dto/listar-responsaveis.dto';
 import { UpdateResponsavelDto } from './dto/update-responsavel.dto';
 import { AtualizarResponsavel } from './use-cases/atualizar-responsavel.use-case';
+import { DeletarResponsavel } from './use-cases/deletar-responsavel.use-case';
 
 @Controller('responsavel')
 export class ResponsavelController {
@@ -22,6 +24,7 @@ export class ResponsavelController {
     private readonly mostrarUmResponsavel: MostrarUmResponsavel,
     private readonly listarTodosResponsaveis: ListarTodosResponsaveis,
     private readonly atualiarResponsavel: AtualizarResponsavel,
+    private readonly deleteResponsavel: DeletarResponsavel,
   ) {}
 
   @Post('/create')
@@ -42,5 +45,10 @@ export class ResponsavelController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateResponsavelDto) {
     return await this.atualiarResponsavel.execute(id, dto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.deleteResponsavel.execute(id);
   }
 }

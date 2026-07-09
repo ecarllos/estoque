@@ -31,4 +31,10 @@ export class ResponsavelCommand {
       },
     });
   }
+
+  async deleteResponsavel(id: string) {
+    return await this.prisma.responsavel.delete({
+      where: { id },
+    });
+  }
 }

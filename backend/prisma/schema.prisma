@@ -13,7 +13,7 @@ model Responsavel {
   setor Setores
   cidade Cidades
   status Boolean
-  assinatura String
+  assinatura String?
   vinculos Vinculo[]
   historico HistoricoObjeto[]
 }
@@ -28,6 +28,7 @@ model Eletronico {
   situacao Status
   seguro Boolean
   condicao Condicao
+  cidade Cidades
   vinculoId String? @unique
 
   vinculo Vinculo? @relation("eletronicoReferencia", fields: [vinculoId], references: [id])
@@ -38,6 +39,7 @@ model Chip {
   operadora Operadoras
   ddd String
   numero String @unique
+  cidade Cidades
   vinculoId String? @unique
 
   vinculo Vinculo? @relation("chipReferencia", fields: [vinculoId], references: [id])
@@ -48,6 +50,7 @@ model Periferico {
   tipo Perifericos
   marca Marcas
   condicao Condicao
+  cidade Cidades
   situacao Status
   vinculoId String? @unique
   

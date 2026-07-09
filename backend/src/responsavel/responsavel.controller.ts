@@ -23,7 +23,7 @@ export class ResponsavelController {
     private readonly criarResponsavel: CriarResponsavelUseCase,
     private readonly mostrarUmResponsavel: MostrarUmResponsavel,
     private readonly listarTodosResponsaveis: ListarTodosResponsaveis,
-    private readonly atualiarResponsavel: AtualizarResponsavel,
+    private readonly atualizarResponsavel: AtualizarResponsavel,
     private readonly deleteResponsavel: DeletarResponsavel,
   ) {}
 
@@ -44,7 +44,7 @@ export class ResponsavelController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateResponsavelDto) {
-    return await this.atualiarResponsavel.execute(id, dto);
+    return await this.atualizarResponsavel.execute(id, dto);
   }
 
   @Delete(':id')

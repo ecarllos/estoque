@@ -22,9 +22,9 @@ export class AtualizarResponsavel {
     }
 
     if (dto.email) {
-      const foundEmail = await this.query.buscarId(id);
+      const foundEmail = await this.query.buscarEmail(dto.email);
 
-      if (foundEmail?.email == dto.email) {
+      if (foundId?.email == dto.email) {
         throw new BadRequestException(`esse responsável já possui esse email`);
       }
       if (foundEmail) {

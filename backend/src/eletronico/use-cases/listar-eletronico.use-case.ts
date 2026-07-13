@@ -7,10 +7,6 @@ export class ListarEletronicosUseCase {
   constructor(private readonly query: EletronicoQuery) {}
 
   async execute(dto: listarEletronicosDto) {
-    const paginas = dto.paginas;
-    const limite = dto.limite;
-    const pular = (paginas - 1) * limite;
-
-    return await this.query.listarEletronicos(pular, limite);
+    return await this.query.listarEletronicos(dto.paginas, dto.limite);
   }
 }

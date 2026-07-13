@@ -1,4 +1,5 @@
 import { prisma } from './client';
+import { seedEletronico } from './eletronico';
 import { seedResponsavel } from './responsavel';
 
 async function main() {
@@ -7,6 +8,8 @@ async function main() {
 
     // 1. Responsável
     await seedResponsavel(prisma);
+    // 2. Eletrônico
+    await seedEletronico(prisma);
   } catch (error) {
     console.error('❌ Erro durante a population:', error);
     process.exit(1);

@@ -29,9 +29,11 @@ export abstract class BaseQuery<T> {
       },
     };
   }
-  async listarPorId(id: string) {
+
+  async listarPorId(id: string, opcoes?: any): Promise<T | null> {
     return await this.prismaService.findUnique({
       where: { id },
+      ...opcoes,
     });
   }
 }

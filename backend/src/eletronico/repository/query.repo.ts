@@ -24,4 +24,13 @@ export class EletronicoQuery extends BaseQuery<Eletronico> {
       },
     });
   }
+
+  async listarUmEletronico(id: string) {
+    return await this.listarPorId(id, {
+      select: {
+        situacao: true,
+        vinculoId: true,
+      },
+    });
+  }
 }

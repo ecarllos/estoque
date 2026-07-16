@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment */
 
 export abstract class BaseQuery<T> {
-  constructor(protected prisma: any) {}
+  constructor(protected prismaService: any) {}
 
   async listarPaginado(
     paginas: number,
     limite: number,
     opcoes?: any,
-  ): Promise<{ dados: T[]; meta: any }> {
+  ): Promise<{ dados?: T[]; meta?: any }> {
     const pular = (paginas - 1) * limite;
 
-    const find = await this.prisma.findMany({
+    const find = await this.prismaService.findMany({
       skip: pular,
       take: limite,
       ...opcoes,
     });
 
-    const count = await this.prisma.count();
+    const count = await this.prismaService.count();
     const totalPaginas = Math.ceil(count / limite);
 
     return {
@@ -29,9 +29,11 @@ export abstract class BaseQuery<T> {
       },
     };
   }
-  async listarPorId(id: string) {
-    return await this.prisma.findUnique({
+
+  async listarPorId(id: string, opcoes?: any): Promise<T | null> {
+    return await this.prismaService.findUnique({
       where: { id },
+      ...opcoes,
     });
   }
 }

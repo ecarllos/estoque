@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ListarResponsaveisDto } from '../dto/listar-responsaveis.dto';
+import { BaseQuery } from '@/common/BaseQuery.common';
+import { Responsavel } from '@prisma/client';
 
 @Injectable()
-export class ResponsavelQuery {
-  constructor(private readonly prisma: PrismaService) {}
+export class ResponsavelQuery extends BaseQuery<Responsavel> {
+  constructor(private readonly prisma: PrismaService) {
+    super(prisma.responsavel);
+  }
 
-  async buscarId(id: string) {
-    return await this.prisma.responsavel.findUnique({
-      where: { id },
-      select: { email: true },
-    });
+  async buscarId(id: string, opcoes?: any) {
+    return await this.listarPorId(id, opcoes);
   }
 
   async buscarEmail(email: string) {

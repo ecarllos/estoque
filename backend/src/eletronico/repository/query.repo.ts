@@ -5,8 +5,8 @@ import { Eletronico } from '@prisma/client';
 
 @Injectable()
 export class EletronicoQuery extends BaseQuery<Eletronico> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.eletronico);
+  constructor(private readonly prisma: PrismaService) {
+    super(prisma.eletronico);
   }
 
   async listarEletronicos(paginas: number, limite: number) {
@@ -21,6 +21,15 @@ export class EletronicoQuery extends BaseQuery<Eletronico> {
             },
           },
         },
+      },
+    });
+  }
+
+  async listarUmEletronico(id: string) {
+    return await this.listarPorId(id, {
+      select: {
+        situacao: true,
+        vinculoId: true,
       },
     });
   }

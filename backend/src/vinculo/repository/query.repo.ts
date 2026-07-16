@@ -12,8 +12,6 @@ export class VinculoQuery extends BaseQuery<Vinculo> {
   }
 
   async buscarVinculo(id: string) {
-    return await this.prisma.vinculo.findUnique({
-      where: { id },
-    });
+    return await this.listarPorId(id);
   }
 }

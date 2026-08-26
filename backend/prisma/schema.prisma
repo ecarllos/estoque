@@ -6,88 +6,155 @@ datasource db {
   provider = "postgresql"
 }
 
+model Role {
+  id        String   @id @default(uuid())
+  nome      String   @unique
+  descricao String?
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  permissoes PermissaoRole[]
+  usuarios   Usuario[]
+}
+
+model Permissao {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  descricao String?
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  permissao      PermissaoRole[]
+  permissaoUser PermissaoUser[]
+
+  @@index([key])
+}
+
+model Usuario {
+  id            String  @id @default(uuid())
+  avatarUrl     String?
+  nome          String
+  email         String  @unique
+  senha         String
+  roleId        String
+  responsavelId String?
+  ativo Boolean @default(true)  
+
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  role           Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permissaoUser PermissaoUser[]
+
+  @@index([roleId])
+}
+
+model PermissaoRole {
+  roleId      String
+  permissaoId String
+
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
+
+  @@id([permissaoId, roleId])
+  @@index([permissaoId])
+}
+
+model PermissaoUser {
+  userId      String
+  permissaoId String
+
+  user     Usuario     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
+
+  @@id([permissaoId, userId])
+  @@index([permissaoId])
+}
+
 model Responsavel {
-  id  String @id @default(uuid())
-  nome  String
-  email String @unique
-  setor Setores
-  cidade Cidades
-  status Boolean
+  id         String            @id @default(uuid())
+  nome       String
+  email      String            @unique
+  setor      Setores
+  cidade     Cidades
+  status     Boolean
   assinatura String?
-  vinculos Vinculo[]
-  historico HistoricoObjeto[]
+  vinculos   Vinculo[]
+  historico  HistoricoObjeto[]
+
+  
 }
 
 model Eletronico {
-  id String @id @default(uuid())
-  tipo Aparelhos
-  numeroSerie String @unique
-  marca Marcas
-  modelo String
-  senha String?
-  situacao Status @default(LIVRE)
-  seguro Boolean
-  condicao Condicao
-  cidade Cidades
-  vinculoId String? @unique
+  id          String    @id @default(uuid())
+  tipo        Aparelhos
+  numeroSerie String    @unique
+  marca       Marcas
+  modelo      String
+  senha       String?
+  situacao    Status    @default(LIVRE)
+  seguro      Boolean
+  condicao    Condicao
+  cidade      Cidades
+  vinculoId   String?   @unique
 
   vinculo Vinculo? @relation("eletronicoReferencia", fields: [vinculoId], references: [id])
 }
 
 model Chip {
-  id String @id @default(uuid())
+  id        String     @id @default(uuid())
   operadora Operadoras
-  ddd String
-  numero String @unique
-  cidade Cidades
-  situacao Status
-  vinculoId String? @unique
+  ddd       String
+  numero    String     @unique
+  cidade    Cidades
+  situacao  Status
+  vinculoId String?    @unique
 
   vinculo Vinculo? @relation("chipReferencia", fields: [vinculoId], references: [id])
 }
 
 model Periferico {
-  id String @id @default(uuid())
-  tipo Perifericos
-  marca Marcas
-  condicao Condicao
-  cidade Cidades
-  situacao Status
-  vinculoId String? @unique
-  
-  vinculo Vinculo? @relation("perifericoReferencia",  fields: [vinculoId], references: [id])
+  id        String      @id @default(uuid())
+  tipo      Perifericos
+  marca     Marcas
+  condicao  Condicao
+  cidade    Cidades
+  situacao  Status
+  vinculoId String?     @unique
+
+  vinculo Vinculo? @relation("perifericoReferencia", fields: [vinculoId], references: [id])
 }
 
 model Vinculo {
-  id String @id @default(uuid())
-  status Boolean
+  id            String  @id @default(uuid())
+  status        Boolean
   responsavelId String
-  detalhes String?
+  detalhes      String?
 
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
   historico HistoricoObjeto[]
-  
+
   eletronicos Eletronico? @relation("eletronicoReferencia")
   perifericos Periferico? @relation("perifericoReferencia")
-  chips Chip? @relation("chipReferencia")
+  chips       Chip?       @relation("chipReferencia")
 
-  responsavel Responsavel @relation( fields: [responsavelId], references: [id])
+  responsavel Responsavel @relation(fields: [responsavelId], references: [id])
 
   @@index([responsavelId])
 }
 
 model HistoricoObjeto {
-  id String @id @default(uuid())
-  vinculoId String
+  id            String   @id @default(uuid())
+  vinculoId     String
   responsavelId String
-  condicao Condicao
-  acao Acao
-  detalhes String?
-  createAt DateTime @default(now())
+  condicao      Condicao
+  acao          Acao
+  detalhes      String?
+  createAt      DateTime @default(now())
 
-  vinculo Vinculo @relation(fields: [vinculoId], references: [id])
+  vinculo     Vinculo     @relation(fields: [vinculoId], references: [id])
   responsavel Responsavel @relation(fields: [responsavelId], references: [id])
 
   @@index([responsavelId])
@@ -118,7 +185,7 @@ enum Operadoras {
 
 enum Status {
   LIVRE
-  OCUPADO 
+  OCUPADO
 }
 
 enum Marcas {

@@ -6,6 +6,25 @@ datasource db {
   provider = "postgresql"
 }
 
+model Usuario {
+  id            String  @id @default(uuid())
+  avatarUrl     String?
+  nome          String
+  email         String  @unique
+  senha         String
+  roleId        String
+  responsavelId String?
+  ativo         Boolean @default(true)
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  role          Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permissaoUser PermissaoUser[]
+
+  @@index([roleId])
+}
+
 model Role {
   id        String   @id @default(uuid())
   nome      String   @unique
@@ -24,36 +43,17 @@ model Permissao {
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 
-  permissao      PermissaoRole[]
+  permissao     PermissaoRole[]
   permissaoUser PermissaoUser[]
 
   @@index([key])
-}
-
-model Usuario {
-  id            String  @id @default(uuid())
-  avatarUrl     String?
-  nome          String
-  email         String  @unique
-  senha         String
-  roleId        String
-  responsavelId String?
-  ativo Boolean @default(true)  
-
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
-
-  role           Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  permissaoUser PermissaoUser[]
-
-  @@index([roleId])
 }
 
 model PermissaoRole {
   roleId      String
   permissaoId String
 
-  role      Role     @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
   permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
 
   @@id([permissaoId, roleId])
@@ -64,7 +64,7 @@ model PermissaoUser {
   userId      String
   permissaoId String
 
-  user     Usuario     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user      Usuario   @relation(fields: [userId], references: [id], onDelete: Restrict)
   permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
 
   @@id([permissaoId, userId])
@@ -81,68 +81,70 @@ model Responsavel {
   assinatura String?
   vinculos   Vinculo[]
   historico  HistoricoObjeto[]
+}
 
-  
+model Utensilio {
+  id        String               @id @default(uuid())
+  categoria CategoriaDispositivo
+
+  cidade   Cidades
+  situacao Status   @default(LIVRE)
+  condicao Condicao @default(SEMI_NOVO)
+
+  eletronico Eletronico?
+  chip       Chip?
+  periferico Periferico?
+
+  vinculos Vinculo[]
 }
 
 model Eletronico {
-  id          String    @id @default(uuid())
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
   tipo        Aparelhos
   numeroSerie String    @unique
   marca       Marcas
   modelo      String
   senha       String?
-  situacao    Status    @default(LIVRE)
   seguro      Boolean
-  condicao    Condicao
-  cidade      Cidades
-  vinculoId   String?   @unique
-
-  vinculo Vinculo? @relation("eletronicoReferencia", fields: [vinculoId], references: [id])
 }
 
 model Chip {
-  id        String     @id @default(uuid())
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
   operadora Operadoras
   ddd       String
   numero    String     @unique
-  cidade    Cidades
-  situacao  Status
-  vinculoId String?    @unique
-
-  vinculo Vinculo? @relation("chipReferencia", fields: [vinculoId], references: [id])
 }
 
 model Periferico {
-  id        String      @id @default(uuid())
-  tipo      Perifericos
-  marca     Marcas
-  condicao  Condicao
-  cidade    Cidades
-  situacao  Status
-  vinculoId String?     @unique
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
 
-  vinculo Vinculo? @relation("perifericoReferencia", fields: [vinculoId], references: [id])
+  tipo  Perifericos
+  marca Marcas
 }
 
 model Vinculo {
-  id            String  @id @default(uuid())
-  status        Boolean
+  id       String  @id @default(uuid())
+  status   Boolean
+  detalhes String?
+
   responsavelId String
-  detalhes      String?
+  responsavel   Responsavel @relation(fields: [responsavelId], references: [id])
+
+  utensilioId String
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
 
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
   historico HistoricoObjeto[]
 
-  eletronicos Eletronico? @relation("eletronicoReferencia")
-  perifericos Periferico? @relation("perifericoReferencia")
-  chips       Chip?       @relation("chipReferencia")
-
-  responsavel Responsavel @relation(fields: [responsavelId], references: [id])
-
   @@index([responsavelId])
+  @@index([utensilioId])
 }
 
 model HistoricoObjeto {
@@ -163,6 +165,12 @@ model HistoricoObjeto {
 // ===================
 //   ENUMS
 // ===================
+
+enum CategoriaDispositivo {
+  ELETRONICO
+  CHIP
+  PERIFERICO
+}
 
 enum Acao {
   DEVOLVIDO

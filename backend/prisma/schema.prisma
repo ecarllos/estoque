@@ -1,9 +1,233 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+}
+
+model Usuario {
+  id            String  @id @default(uuid())
+  avatarUrl     String?
+  nome          String
+  email         String  @unique
+  senha         String
+  roleId        String
+  responsavelId String?
+  ativo         Boolean @default(true)
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  role          Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permissaoUser PermissaoUser[]
+
+  @@index([roleId])
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  nome      String   @unique
+  descricao String?
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  permissoes PermissaoRole[]
+  usuarios   Usuario[]
+}
+
+model Permissao {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  descricao String?
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  permissao     PermissaoRole[]
+  permissaoUser PermissaoUser[]
+
+  @@index([key])
+}
+
+model PermissaoRole {
+  roleId      String
+  permissaoId String
+
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
+
+  @@id([permissaoId, roleId])
+  @@index([permissaoId])
+}
+
+model PermissaoUser {
+  userId      String
+  permissaoId String
+
+  user      Usuario   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  permissao Permissao @relation(fields: [permissaoId], references: [id], onDelete: Restrict)
+
+  @@id([permissaoId, userId])
+  @@index([permissaoId])
+}
+
+model Responsavel {
+  id         String            @id @default(uuid())
+  nome       String
+  email      String            @unique
+  setor      Setores
+  cidade     Cidades
+  status     Boolean
+  assinatura String?
+  vinculos   Vinculo[]
+  historico  HistoricoObjeto[]
+}
+
+model Utensilio {
+  id        String               @id @default(uuid())
+  categoria CategoriaDispositivo
+
+  cidade   Cidades
+  situacao Status   @default(LIVRE)
+  condicao Condicao @default(SEMI_NOVO)
+
+  eletronico Eletronico?
+  chip       Chip?
+  periferico Periferico?
+
+  vinculos Vinculo[]
+}
+
+model Eletronico {
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
+  tipo        Aparelhos
+  numeroSerie String    @unique
+  marca       Marcas
+  modelo      String
+  senha       String?
+  seguro      Boolean
+}
+
+model Chip {
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
+  operadora Operadoras
+  ddd       String
+  numero    String     @unique
+}
+
+model Periferico {
+  utensilioId String    @id
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
+  tipo  Perifericos
+  marca Marcas
+}
+
+model Vinculo {
+  id       String  @id @default(uuid())
+  status   Boolean
+  detalhes String?
+
+  responsavelId String
+  responsavel   Responsavel @relation(fields: [responsavelId], references: [id])
+
+  utensilioId String
+  utensilio   Utensilio @relation(fields: [utensilioId], references: [id])
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  historico HistoricoObjeto[]
+
+  @@index([responsavelId])
+  @@index([utensilioId])
+}
+
+model HistoricoObjeto {
+  id            String   @id @default(uuid())
+  vinculoId     String
+  responsavelId String
+  condicao      Condicao
+  acao          Acao
+  detalhes      String?
+  createAt      DateTime @default(now())
+
+  vinculo     Vinculo     @relation(fields: [vinculoId], references: [id])
+  responsavel Responsavel @relation(fields: [responsavelId], references: [id])
+
+  @@index([responsavelId])
+}
+
+// ===================
+//   ENUMS
+// ===================
+
+enum CategoriaDispositivo {
+  ELETRONICO
+  CHIP
+  PERIFERICO
+}
+
+enum Acao {
+  DEVOLVIDO
+  ENTREGUE
+}
+
+enum Perifericos {
+  MOUSE
+  TECLADO
+  MOUSE_PAD
+  CARREGADOR
+  SUPORTE
+}
+
+enum Operadoras {
+  CLARO
+  TIM
+  VIVO
+}
+
+enum Status {
+  LIVRE
+  OCUPADO
+}
+
+enum Marcas {
+  LENOVO
+  SAMSUNG
+  XIAOMI
+  MOTOROLA
+  GENERICO
+  OUTRA
+}
+
+enum Condicao {
+  NOVO
+  SEMI_NOVO
+  USADO
+}
+
+enum Aparelhos {
+  NOTEBOOK
+  CELULAR
+  TABLET
+}
+
+enum Setores {
+  COMERCIAL
+  BACKOFFICE
+  ADMINISTRATIVO
+  RELACIONAMENTO
+  TI
+}
+
+enum Cidades {
+  FORTALEZA
+  JUAZEIRO
+  JOINVILLE
+  JOAO_PESSOA
 }
